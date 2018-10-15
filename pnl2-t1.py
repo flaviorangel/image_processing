@@ -255,22 +255,22 @@ def detect_edges_prewitt(image_name, threshold=50):
     for i in range(1, height-1):
         for j in range(1, width-1):
             for k in range(0, 3):
-                m1 = im_as_array[i+1][j-1][k] + im_as_array[i+1][j][k] + im_as_array[i+1][j+1][k]\
-                    - (im_as_array[i-1][j-1][k] + im_as_array[i-1][j][k] + im_as_array[i-1][j+1][k])
-                m2 = im_as_array[i + 1][j][k] + im_as_array[i + 1][j + 1][k] + im_as_array[i][j + 1][k]\
-                    - (im_as_array[i][j-1][k] + im_as_array[i-1][j-1][k] + im_as_array[i-1][j][k])
-                m3 = im_as_array[i + 1][j + 1][k] + im_as_array[i][j + 1][k] + im_as_array[i - 1][j+1][k] \
-                    - (im_as_array[i + 1][j-1][k] + im_as_array[i][j - 1][k] + im_as_array[i - 1][j - 1][k])
-                m4 = im_as_array[i][j + 1][k] + im_as_array[i - 1][j + 1][k] + im_as_array[i - 1][j][k]\
-                    - (im_as_array[i][j - 1][k] + im_as_array[i - 1][j - 1][k] + im_as_array[i + 1][j][k])
-                m5 = -(im_as_array[i + 1][j - 1][k] + im_as_array[i + 1][j][k] + im_as_array[i + 1][j + 1][k]) \
-                    + im_as_array[i - 1][j - 1][k] + im_as_array[i - 1][j][k] + im_as_array[i - 1][j + 1][k]
-                m6 = -(im_as_array[i + 1][j][k] + im_as_array[i + 1][j + 1][k] + im_as_array[i][j + 1][k]) \
-                    + im_as_array[i][j - 1][k] + im_as_array[i - 1][j - 1][k] + im_as_array[i - 1][j][k]
-                m7 = -(im_as_array[i + 1][j + 1][k] + im_as_array[i][j + 1][k] + im_as_array[i - 1][j + 1][k]) \
-                    + im_as_array[i + 1][j - 1][k] + im_as_array[i][j - 1][k] + im_as_array[i - 1][j - 1][k]
-                m8 = -(im_as_array[i][j + 1][k] + im_as_array[i - 1][j + 1][k] + im_as_array[i - 1][j][k]) \
-                    + im_as_array[i][j - 1][k] + im_as_array[i - 1][j - 1][k] + im_as_array[i + 1][j][k]
+                m1 = int(im_as_array[i+1][j-1][k]) + int(im_as_array[i+1][j][k]) + int(im_as_array[i+1][j+1][k])\
+                    - (int(im_as_array[i-1][j-1][k]) + int(im_as_array[i-1][j][k]) + int(im_as_array[i-1][j+1][k]))
+                m2 = int(im_as_array[i+1][j][k]) + int(im_as_array[i+1][j+1][k]) + int(im_as_array[i][j+1][k])\
+                    - (int(im_as_array[i][j-1][k]) + int(im_as_array[i-1][j-1][k]) + int(im_as_array[i-1][j][k]))
+                m3 = int(im_as_array[i+1][j+1][k]) + int(im_as_array[i][j+1][k]) + int(im_as_array[i-1][j+1][k]) \
+                    - (int(im_as_array[i+1][j-1][k]) + int(im_as_array[i][j-1][k]) + int(im_as_array[i-1][j-1][k]))
+                m4 = int(im_as_array[i][j+1][k]) + int(im_as_array[i-1][j+1][k]) + int(im_as_array[i-1][j][k])\
+                    - (int(im_as_array[i][j-1][k]) + int(im_as_array[i-1][j-1][k]) + int(im_as_array[i+1][j][k]))
+                m5 = -(int(im_as_array[i+1][j-1][k]) + int(im_as_array[i+1][j][k]) + int(im_as_array[i+1][j+1][k]))\
+                    + int(im_as_array[i-1][j-1][k]) + int(im_as_array[i-1][j][k]) + int(im_as_array[i-1][j+1][k])
+                m6 = -(int(im_as_array[i+1][j][k]) + int(im_as_array[i+1][j+1][k]) + int(im_as_array[i][j+1][k]))\
+                    + int(im_as_array[i][j-1][k]) + int(im_as_array[i-1][j-1][k]) + int(im_as_array[i-1][j][k])
+                m7 = -(int(im_as_array[i+1][j+1][k]) + int(im_as_array[i][j+1][k]) + int(im_as_array[i-1][j+1][k]))\
+                    + int(im_as_array[i+1][j-1][k]) + int(im_as_array[i][j-1][k]) + int(im_as_array[i-1][j-1][k])
+                m8 = -(int(im_as_array[i][j+1][k]) + int(im_as_array[i-1][j+1][k]) + int(im_as_array[i-1][j][k])) \
+                    + int(im_as_array[i][j-1][k]) + int(im_as_array[i-1][j-1][k]) + int(im_as_array[i+1][j][k])
                 m = max(m1, m2, m3, m4, m5, m6, m7, m8)
                 if m > threshold:
                     # print(i, j, k, m)
@@ -294,8 +294,8 @@ if __name__ == "__main__":
     # detect_edges_sobel(face_image, threshold=100)
     # detect_edges_sobel(free_choice_image, threshold=50)
     # detect_edges_sobel(free_choice_image, threshold=100)
-    detect_edges_sobel(busy_image, threshold=50)
-    detect_edges_sobel(busy_image, threshold=100)
-    detect_edges_sobel(landscape_image, threshold=50)
-    detect_edges_sobel(landscape_image, threshold=100)
-
+    # detect_edges_sobel(busy_image, threshold=50)
+    # detect_edges_sobel(busy_image, threshold=100)
+    # detect_edges_sobel(landscape_image, threshold=50)
+    # detect_edges_sobel(landscape_image, threshold=100)
+    detect_edges_prewitt(face_image, threshold=50)
