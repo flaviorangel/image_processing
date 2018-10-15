@@ -3,10 +3,10 @@ import math
 import numpy as np
 import scipy.misc
 
-im1 = 'drops.jpg'
+busy_image = 'drops.jpg'
 im2 = 'fog.jpg'
 face_image = 'face.jpg'
-im4 = 'antique.jpg'
+free_choice_image = 'antique.jpg'
 size_test = 'antique_test.jpg'
 test = 'simple.png'
 test_small = 'simple.jpg'
@@ -31,8 +31,8 @@ def twirl(center, radius, angle, height, width):
             if r > radius:
                 pixel_location_matrix[i][j][0] = i
                 pixel_location_matrix[i][j][1] = j
-            else:
                 pixel_location_matrix[i][j][2] = 1
+            else:
                 beta = np.arctan2(dy, dx)
                 beta += angle*(radius - r)/radius
                 pixel_i = center[0] + r*np.sin(beta)
@@ -42,12 +42,48 @@ def twirl(center, radius, angle, height, width):
     return pixel_location_matrix
 
 
+def ripple(tao_x, tao_y, a_x, a_y, height, width):
+    print("executing ripple routine in image")
+    pixel_location_matrix = np.zeros(shape=(height, width, 3))
+    for i in range(0, height):
+        for j in range(0, width):
+            pixel_location_matrix[i][j][0] = i + a_y*np.sin((2*math.pi*j)/tao_y)
+            pixel_location_matrix[i][j][1] = j + a_x*np.sin((2*math.pi*i)/tao_x)
+    return pixel_location_matrix
+
+
+def spherical(center, radius, height, width, ro):
+    print("executing spherical routine in image")
+    pixel_location_matrix = np.zeros(shape=(height, width, 3))
+    for i in range(0, height):
+        for j in range(0, width):
+            dy = i - center[0]
+            dx = j - center[1]
+            r = math.sqrt(dx*dx + dy*dy)
+            if r >= radius:
+                pixel_location_matrix[i][j][0] = i
+                pixel_location_matrix[i][j][1] = j
+                pixel_location_matrix[i][j][2] = 1
+            else:
+                z = math.sqrt(radius*radius - r*r)
+                beta_x = (1 - 1/ro)*np.arcsin(dx/(math.sqrt(dx*dx + z*z)))
+                beta_y = (1 - 1/ro)*np.arcsin(dy/(math.sqrt(dy*dy + z*z)))
+                pixel_i = i - z*np.tan(beta_y)
+                pixel_j = j - z*np.tan(beta_x)
+                pixel_location_matrix[i][j][0] = pixel_i
+                pixel_location_matrix[i][j][1] = pixel_j
+    return pixel_location_matrix
+
+
 def interpol_lin(image_as_array, location_matrix, transformation_name, height, width, my_image):
+    print("executing interpolation routine")
+    if height > 2000 or width > 2000:
+        print("this may take a while...")
     new_image = np.copy(image_as_array)
     for i in range(0, height):
         # new_line = []
         for j in range(0, width):
-            if location_matrix[i][j][2] == 0:
+            if location_matrix[i][j][2] == 1:
                 continue
             y = float(location_matrix[i][j][0])
             x = float(location_matrix[i][j][1])
@@ -124,15 +160,38 @@ def interpol_lin(image_as_array, location_matrix, transformation_name, height, w
 def twirl_image(image_name):
     im = Image.open(image_name)
     width, height = im.size
-    my_center = [int(height/2), int(width/2)]
-    my_radius = int(min(height/4, width/4))
+    my_center = [int(height/5), int(width/5)]
+    my_radius = int(max(height/2, width/2))
     my_angle = math.pi
     im_as_array = prepare_image(image_name)
     interpol_lin(im_as_array, twirl(my_center, my_radius, my_angle, height, width),
                  "twirl", height, width, image_name)
 
 
+def ripple_image(image_name):
+    im = Image.open(image_name)
+    width, height = im.size
+    tao_x = 1
+    tao_y = 200
+    a_x = 0*width/20
+    a_y = height/20
+    im_as_array = prepare_image(image_name)
+    interpol_lin(im_as_array, ripple(tao_x, tao_y, a_x, a_y, height, width),
+                 "ripple", height, width, image_name)
+
+
+def spherical_image(image_name):
+    im = Image.open(image_name)
+    width, height = im.size
+    my_center = [int(height / 3), int(width / 5)]
+    my_radius = int(min(height / 5, width / 5))
+    ro = 5
+    im_as_array = prepare_image(image_name)
+    interpol_lin(im_as_array, spherical(my_center, my_radius, height, width, ro),
+                 "spherical", height, width, image_name)
+
+
 if __name__ == "__main__":
-    twirl_image(face_image)
-
-
+    # twirl_image(face_image)
+    # ripple_image(free_choice_image)
+    spherical_image(busy_image)
